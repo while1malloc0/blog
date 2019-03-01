@@ -1,0 +1,22 @@
+languageCode = "en-us"
+title = "Breaking Computer"
+baseurl = "https://breaking.computer/"
+theme = "kiss"
+Paginate = 5
+
+[params.rss]
+includeContent = true
+authorName = "John Turner"
+authorEmail = "while1malloc0+breakingcomputer@gmail.com"
+
+[params.social]
+twitter = "while1malloc0"
+github = "while1malloc0"
+email = "while1malloc0+breakingcomputer@gmail.com"
+rss = "index.xml"
+
+[params.social.config]
+platforms = ["twitter", "github", "email"]
+
+[taxonomies]
+tag = "tags"
