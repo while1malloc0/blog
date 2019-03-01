@@ -1,0 +1,4 @@
+[submodule "public"]
+	path = public
+	url = git@github.com:while1malloc0/while1malloc0.github.io.git
+	branch = master
