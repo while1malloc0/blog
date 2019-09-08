@@ -24,7 +24,7 @@ The person you’re arguing with may disagree with that ranking.
 If you suspect differing opinions about what to optimize for, confirm that before continuing the discussion. 
 Aligning on requirements transforms "the function at line 37 should be more performant" into "the function at line 37 is trading some performance for being more readable. We agreed that performance is more important”
 
-![values-ladder](/static/values-ladder.png)
+![values-ladder](../../values-ladder.png)
 
 **Requirement** is where you rank architectural drivers such as readability, maintainability, and performance. I believe—in the absence of any hard data—that most technical disagreements boil down to requirements. Sentences like “do we agree that readability is more important than squeezing every inch of performance from this code?” go a long way in ensuring that you’re arguing the same thing. If you both agree, great, go back to implementation details. If you disagree, you might need to agree on what outcome you’re trying to achieve, or on how the requirements contribute to that outcome.
 
