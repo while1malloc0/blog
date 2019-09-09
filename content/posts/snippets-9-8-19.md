@@ -1,7 +1,6 @@
 ---
 title: "Snippets 9/8/19"
 date: 2019-09-08T18:25:28-04:00
-draft: true
 ---
 
 This past week, I was hiking towards an inactive volcano when it dawned on me that I haven't done one of those "bunch of random thoughts" update posts in a while.
