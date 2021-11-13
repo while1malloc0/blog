@@ -1,7 +1,7 @@
 ---
-title: (working) Seasoning Problems
+title: Seasoning Problems
 date: 2021-11-07
-status: unpublished
+status: published
 ---
 
 # Seasoning Problems
