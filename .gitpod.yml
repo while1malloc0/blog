@@ -1,0 +1,4 @@
+tasks:
+  - command: make server # start the Hugo server
+
+
