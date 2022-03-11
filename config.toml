@@ -1,13 +1,13 @@
 languageCode = "en-us"
 title = "Breaking Computer"
 baseurl = "https://breaking.computer/"
-theme = "kiss"
+theme = "PaperMod"
 Paginate = 5
 
 [params.rss]
 includeContent = true
 authorName = "John Turner"
-authorEmail = "while1malloc0+breakingcomputer@gmail.com"
+authorEmail = "john@breaking.computer"
 
 [params.social]
 twitter = "while1malloc0"
