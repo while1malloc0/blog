@@ -64,12 +64,12 @@ In fact, one of the key provisions of the GDPR is that a user can revoke consent
 This means that we not only care about when a user accepts cookies, but when they revoke that consent.
 We have a few options to deal with this new requirement.
 First, we could send events when this value changes state.
-If you're already sending an event stream, this might be a workable solution.
+This might be a good solution if you're already streaming events into something like Honeycomb [TODO: link].
+But we can also use data modeling to help here.
+What we really want from our boolean is a snapshot of what the _current_ state of the world is.
+In other words, does our user _currently_ consent to having their data pillaged with tracking cookies?
 
-[TODO: start here]
-What we really want from our boolean here is a "snapshot" of the current state of the world: is the user currently consenting to cookies?
-
-This is ultimately what linked example lands on (translated into Go for consistency):
+This sort of "snapshot boolean" is ultimately what the Thoughtbot post lands on (translated to Go for consistency):
 
 ```go
 type Post struct{
@@ -107,8 +107,10 @@ func (u *User) ConsentsToCookies() bool {
 }
 ```
 
+**Takeway: use "snapshot" boolean methods to derive the current state from your data.**
+
 ---
 
 So, here's the takeaway: the next time you're looking to model some data as a boolean, ask yourself whether or not it's _actually_ a two state value that's not likely to change.
-If it is, congrats, write it as a boolean.
+If it is, great, write it as a boolean.
 If not, consider storing it as an enum or timestamps and deriving snapshot booleans from that data.
