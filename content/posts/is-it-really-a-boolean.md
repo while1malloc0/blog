@@ -1,7 +1,7 @@
 ---
 title: Is It Really A Boolean?
 date: 2022-04-03
-status: draft
+status: revising
 ---
 
 # Is It Really A Boolean?
