@@ -6,11 +6,10 @@ status: revising
 
 # Is It Really A Boolean?
 
-In a recent post on the Thoughbot blog [TODO: link], Josh Clayton wrote about reducing leaky abstractions caused by ActiveRecord.
-As a working example, he shows a common way of modeling blog post data: a Post class with a "published" boolean field.
-It's a great post, and the fix that's suggested for the example abstraction leak is a good one.
-Josh looks at the problem through the lens of ActiveRecord. 
-But, it's also a great example of a common error in data modeling: storing values as booleans that really shouldn't be.
+In a [recent post](https://thoughtbot.com/blog/reducing-leaky-abstractions-introduced-by-activerecord) on the Thoughbot blog, [Josh Clayton](https://twitter.com/joshuaclayton) wrote about reducing leaky abstractions caused by ActiveRecord.
+As a working example, he shows a common way of modeling blog post data: a `Post` class with a `published` boolean field.
+It's a great post, and the fix that's suggested for the leak is a good one.
+Josh looks at the problem through the lens of ActiveRecord, but it's also a great example of a common error in data modeling more generally: storing values as booleans that really shouldn't be.
 Let's look at some questions you can use to figure out whether storing a value as a boolean is a good idea.
 
 ## Is the "when" important?
@@ -20,13 +19,13 @@ In Josh's example, the "published" field becomes a problem because publication d
 Booleans don't have a notion of time. 
 As such, they're generally a poor fit if _when_ something happens is important.
 
-**If the "when" is important, don't use a boolean**
+**Takeaway: if the "when" is important, don't use a boolean**
 
 ## Is the data nullable?
 
 This is sometimes called the "three state boolean" problem.
 
-For example, consider the case of a user accepting the horrendous cookie banners that plague nearly every web site:
+For example, consider the case of a user accepting the horrendous cookie banners that plague the web:
 
 ```go
 type User struct {
