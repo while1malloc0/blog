@@ -6,44 +6,47 @@ status: revising
 
 # Is It Really A Boolean?
 
-Recently in a Thoughtbot blog post [TODO: link], Josh Clayton wrote about how to reduce a leaky abstraction caused by ActiveRecord.
-The post is great, and the fix that's suggested for the example abstraction leak is a good one.
-However, because it's an example, there's not much ink spilled as to _why_ the field was a boolean in the first place [TODO: expand].
-I believe that this falls into one of the most common data modeling traps: representing things as booleans when they're not.
-Because an ounce of prevention is worth a pound of cure, let's look at a few heuristics you can use when thinking through whether to model something as a boolean.
+In a recent post on the Thoughbot blog [TODO: link], Josh Clayton wrote about reducing leaky abstractions caused by ActiveRecord.
+As a working example, he shows a common way of modeling blog post data: a Post class with a "published" boolean field.
+It's a great post, and the fix that's suggested for the example abstraction leak is a good one.
+Josh looks at the problem through the lens of ActiveRecord. 
+But, it's also a great example of a common error in data modeling: storing values as booleans that really shouldn't be.
+Let's look at some questions you can use to figure out whether storing a value as a boolean is a good idea.
 
-## Is the boolean state likely to change over time?
+## Is the "when" important?
 
-One really common trap is to model something as a boolean that has a temporal aspect to it.
-This is exactly what happened in the above post: a field was modeled as a boolean, and it was fine until a temporal aspect of the thing it was modeling was introduced.
-Booleans have no concept of temporality, and as such they're not particulary good at modeling data whose state changes often.
-Even if your data really does only have two states, by modeling it as a boolean you lose any ability to introspect when those states change.
+One common mistake is to store data as a boolean that has implicit date information attached to it.
+In Josh's example, the "published" field becomes a problem because publication date is an important piece of information.
+Booleans don't have a notion of time. 
+As such, they're generally a poor fit if _when_ something happens is important.
+
+**If the "when" is important, don't use a boolean**
 
 ## Is the data nullable?
 
 This is sometimes called the "three state boolean" problem.
 
-For example, consider someone accepting those horrendous cookie banners that plague nearly every web page these days:
+For example, consider the case of a user accepting the horrendous cookie banners that plague nearly every web site:
 
 ```go
 type User struct {
     // denotes whether or not the user has clicked our annoying cookie banner
     // if this field is nil, the user has not clicked either "accept" or "reject"
-    HasConsentedToBeTheProduct *bool
+    ConsentedToCookies *bool
 }
 ```
 
 That boolean has three states: "accepted," "rejected," and "has not said one way or another."
+
 In cases like this, you're often better off modeling each state as an enum:
 
 ```go
-// [TODO: CookieConsentState is better here, and throughout]
-type CookieAcceptanceState int
+type CookieConsentState int
 
 const (
-    CookieAcceptanceStateNone CookieAcceptanceState = iota
-    CookieAcceptanceStateAgreed
-    CookieAcceptanceStateRejected
+    CookieConsentStateNone CookieConsentState = iota
+    CookieConsentStateAgreed
+    CookieConsentStateRejected
 )
 
 type User struct {
@@ -51,11 +54,19 @@ type User struct {
 }
 ```
 
+**If your data has more than two states, don't use a boolean.**
+
 ## Booleans as snapshots
 
-Eagle-eyed readers will spot that the above modeling using enums actually violates the first heuristic above: our user is likely to click "accept" or "reject" at some point, meaning that our data likely has a temporal aspect to it.
-And indeed, one of the key provisions of the GDPR is that a user can revoke their consent at any time, meaning that we're likely to see even more state changes as users with privacy concerns figure out how to opt out.
-Even modeling it as an enum, we're losing some critical auditing abilities that storing things as timestamps gives us.
+You might be thinking "wait, isn't _when_ the user accepts cookies important?"
+Indeed it is.
+In fact, one of the key provisions of the GDPR is that a user can revoke consent for tracking at any time. 
+This means that we not only care about when a user accepts cookies, but when they revoke that consent.
+We have a few options to deal with this new requirement.
+First, we could send events when this value changes state.
+If you're already sending an event stream, this might be a workable solution.
+
+[TODO: start here]
 What we really want from our boolean here is a "snapshot" of the current state of the world: is the user currently consenting to cookies?
 
 This is ultimately what linked example lands on (translated into Go for consistency):
