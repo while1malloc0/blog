@@ -37,6 +37,7 @@ That boolean has three states: "accepted," "rejected," and "has not said one way
 In cases like this, you're often better off modeling each state as an enum:
 
 ```go
+// [TODO: CookieConsentState is better here, and throughout]
 type CookieAcceptanceState int
 
 const (
@@ -52,3 +53,51 @@ type User struct {
 
 ## Booleans as snapshots
 
+Eagle-eyed readers will spot that the above modeling using enums actually violates the first heuristic above: our user is likely to click "accept" or "reject" at some point, meaning that our data likely has a temporal aspect to it.
+And indeed, one of the key provisions of the GDPR is that a user can revoke their consent at any time, meaning that we're likely to see even more state changes as users with privacy concerns figure out how to opt out.
+Even modeling it as an enum, we're losing some critical auditing abilities that storing things as timestamps gives us.
+What we really want from our boolean here is a "snapshot" of the current state of the world: is the user currently consenting to cookies?
+
+This is ultimately what linked example lands on (translated into Go for consistency):
+
+```go
+type Post struct{
+    PublishedAt *time.Time
+}
+
+func (p *Post) IsPublished() bool {
+    return p.PublishedAt != nil && *p.PublishedAt >= time.Now()
+}
+```
+
+We can get a similar ability to view a "snapshot" of our cookie consent state by storing consent data as timestamps:
+
+```go
+type User struct{
+    CookieConsentAcceptedAt *time.Time
+    CookieConsentRejectedAt *time.Time
+}
+
+// [TODO: this is kind of messy]
+func (u *User) ConsentsToCookies() bool {
+    switch {
+    // case 1: user never clicked "accept" 
+    case u.CookieConsentAcceptedAt == nil:
+        return false
+    // case 2: user clicked "accept" and not "reject"
+    case u.CookieConsentRejectedAt == nil:
+        return true
+    // case 3: user clicked "accept" and then clicked "reject" later
+    case *u.CookieConsentRejectedAt > *u.CookieConsentAcceptedAt:
+        return true
+    default:
+        return false
+    }
+}
+```
+
+---
+
+So, here's the takeaway: the next time you're looking to model some data as a boolean, ask yourself whether or not it's _actually_ a two state value that's not likely to change.
+If it is, congrats, write it as a boolean.
+If not, consider storing it as an enum or timestamps and deriving snapshot booleans from that data.
